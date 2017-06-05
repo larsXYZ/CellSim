@@ -38,3 +38,5 @@ MODULES:
 		*Plant
 		*Algae
 		*Prefered growing direction
+		*Needs air
+		*Needs ground
