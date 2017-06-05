@@ -1,0 +1,40 @@
+DESIGN DOCUMENT FOR CELL SIMULATOR SUMMER2017
+-Lars Mansåker Angelsen
+
+
+
+DESCRIPTION:
+
+	A grid based simulation of cells interacting with eachother. Each cell has its own DNA and can evolve over time.
+	Some cells should hunt other cells while some absorb sunlight. The cells needs energy to survive and will die after
+	a period without it.
+	
+
+MODULES:
+
+	CellSim
+		Main program, runs all other modules. Including graphics
+
+	World
+		Holds all the cells in a grid structure. Has sunlight, obstructions, and random events. The grid contains two pointers, one to a 			cell (if there is one) and what type of place it is. Air/ground/water etc...
+		
+	
+	Cell
+		*The cells being simulated. Has DNA, and hopefully a will to live.
+		*Some gets energy from sun, some eat other cells
+		*Some like to be in dirt, some air, some water
+		*Some move, some dont
+		*All have energy, which gradually drains.
+		*Actions need energy, moving/growing etc.
+		
+
+	GENES
+		Information about how the cell behaves. Can be inheritet
+		*Lifespan
+		*Breedingrate
+		*Slippery
+		*Color
+		*Flying
+		*Herbavore
+		*Plant
+		*Algae
