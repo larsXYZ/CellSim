@@ -5,7 +5,7 @@
 worldObject::worldObject()
 {
 	generate_ground();
-	createLife();
+	for (int i = 0; i < 5; i++) createLife();
 }
 
 void worldObject::generate_ground()

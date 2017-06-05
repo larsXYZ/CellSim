@@ -27,7 +27,6 @@ MODULES:
 		*All have energy, which gradually drains.
 		*Actions need energy, moving/growing etc.
 		
-
 	GENES
 		Information about how the cell behaves. Can be inheritet
 		*Lifespan
@@ -38,3 +37,4 @@ MODULES:
 		*Herbavore
 		*Plant
 		*Algae
+		*Prefered growing direction
