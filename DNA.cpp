@@ -30,7 +30,7 @@ DNAOBJECT::DNAOBJECT(DNAOBJECT *d)
 	movefreq = d->movefreq +(rand()%mutation_rate-mutation_rate/2);
 	turnfreq = d->turnfreq +(rand()%mutation_rate-mutation_rate/2);
 	
-	foodtype = 1;
+	foodtype = 0;
 	
 	if (rand() % 100 < mutation_rate) stationary = !stationary;
 	

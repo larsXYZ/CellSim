@@ -37,12 +37,12 @@ void drawWorld(worldObject* world, sf::RenderWindow* window)
 		//Grid might be in shadow
 		if (world->grid[i].lightStrength < sunStrength)
 		{
-			double lightStrength = ((double)world->grid[i].lightStrength)/sunStrength;
-			if (lightStrength < minLightCoeff) lightStrength = minLightCoeff;
+			double lightCoeff = minLightCoeff + (1-minLightCoeff)*((double)world->grid[i].lightStrength/(double)sunStrength);
+		
 			sf::Color nColor = rectangle.getFillColor();
-			nColor.r = lightStrength*nColor.r;
-			nColor.g = lightStrength*nColor.g;
-			nColor.b = lightStrength*nColor.b; 
+			nColor.r = lightCoeff*nColor.r;
+			nColor.g = lightCoeff*nColor.g;
+			nColor.b = lightCoeff*nColor.b; 
 			rectangle.setFillColor(nColor);
 		}
 		
@@ -68,12 +68,12 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
    		//Cell might be in shadow
 		if (world->grid[i].lightStrength < sunStrength)
 		{
-			double lightStrength = ((double)world->grid[i].lightStrength)/sunStrength;
-			if (lightStrength < minLightCoeff) lightStrength = minLightCoeff;
+			double lightCoeff = minLightCoeff + (1-minLightCoeff)*((double)world->grid[i].lightStrength/(double)sunStrength);
+		
 			sf::Color nColor = circle.getFillColor();
-			nColor.r = lightStrength*nColor.r;
-			nColor.g = lightStrength*nColor.g;
-			nColor.b = lightStrength*nColor.b; 
+			nColor.r = lightCoeff*nColor.r;
+			nColor.g = lightCoeff*nColor.g;
+			nColor.b = lightCoeff*nColor.b; 
 			circle.setFillColor(nColor);
 		}
    		
