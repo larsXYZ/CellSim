@@ -65,8 +65,9 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
     	circle.setPosition(x*gridsize,y*gridsize);
    		circle.setFillColor(sf::Color(cell->DNA->color_red,cell->DNA->color_green,cell->DNA->color_blue));
    		
-   		//Cell might be in shadow
-		if (world->grid[i].lightStrength < sunStrength)
+   		//Cell might be in shadow orbe herbavore 
+   		if (cell->DNA->foodtype == 1) circle.setFillColor(sf::Color::Black)
+		else if (world->grid[i].lightStrength < sunStrength)
 		{
 			double lightCoeff = minLightCoeff + (1-minLightCoeff)*((double)world->grid[i].lightStrength/(double)sunStrength);
 		
@@ -76,6 +77,8 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
 			nColor.b = lightCoeff*nColor.b; 
 			circle.setFillColor(nColor);
 		}
+		
+		
    		
    		window->draw(circle);
    		

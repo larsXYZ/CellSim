@@ -37,15 +37,41 @@ void cell::live()
 	//Requires energy to live
 	energy -= lifeCost;
 	
-	//Gets energy from photosynthesis
+	//Gets energy from photosynthesis if plant
 	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;
 	if (DNA->foodtype == 0 && lightStrength > 0) energy += photosynthesisStrength*lightStrength; 
+	
+	//Tries to eat plants if herbivore
+	if (DNA->foodtype == 1) eatPlant();
 	
 	//Limits energy too 100
 	if (energy > 100) energy = 100;
 	
 	//Breed
 	duplicate();
+}
+
+
+void cell::eatPlant()
+{
+	//Checks eatchance
+	if (eatChancePlant > rand()%100) return;	
+	
+	//Gets random direction
+	int* dir = getRandomDirection();
+	int index = world->vectorToIndex(xpos+dir[0],ypos+dir[1]);
+	delete dir;
+	
+	if (world->grid[index].life != NULL)
+	{
+		cell* victim = world->grid[index].life;
+		if (victim->DNA->foodtype == 0)
+		{
+			energy += victim->energy;
+			delete victim;
+			world->grid[index].life = NULL;
+		}
+	}
 }
 
 void cell::duplicate()

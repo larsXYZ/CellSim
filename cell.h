@@ -23,6 +23,7 @@ struct cell
 	
 	void live();
 	void duplicate();
+	void eatPlant();
 	void crawl(int i);
 	
 	int* getRandomDirection();

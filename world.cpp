@@ -144,6 +144,7 @@ void worldObject::calcLight()
 void worldObject::createLife()
 {
 	cell* new_cell = new cell(this);
+	new_cell->DNA->foodtype = 0; //We must start with plants
 	grid[(new_cell->ypos*xsize)+new_cell->xpos].life = new_cell;
 }
 
