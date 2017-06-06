@@ -41,3 +41,4 @@ MODULES:
 		*Prefered growing direction
 		*Needs air
 		*Needs ground
+		*Energitransport

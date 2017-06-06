@@ -32,7 +32,10 @@ cell::cell(worldObject* w)
 void cell::live()
 {
 	//Ages
-	age++;	
+	age++;
+	
+	//Requires energy to live
+	energy -= lifeCost;
 	
 	//Gets energy from photosynthesis
 	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;

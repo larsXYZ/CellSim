@@ -27,5 +27,6 @@ static const int turnfreq_max = 10;
 //Cells
 static const int movementCost = 1;
 static const int photosynthesisStrength = 1;
+static const int lifeCost = 1;
 
 #endif
