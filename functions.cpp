@@ -34,6 +34,18 @@ void drawWorld(worldObject* world, sf::RenderWindow* window)
     		}
     	}
 
+		//Grid might be in shadow
+		if (world->grid[i].lightStrength < sunStrength)
+		{
+			double lightStrength = ((double)world->grid[i].lightStrength)/sunStrength;
+			if (lightStrength < minLightCoeff) lightStrength = minLightCoeff;
+			sf::Color nColor = rectangle.getFillColor();
+			nColor.r = lightStrength*nColor.r;
+			nColor.g = lightStrength*nColor.g;
+			nColor.b = lightStrength*nColor.b; 
+			rectangle.setFillColor(nColor);
+		}
+		
    		window->draw(rectangle);
     }
 }
@@ -52,6 +64,19 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
 		circle.setRadius(gridsize/2);    	
     	circle.setPosition(x*gridsize,y*gridsize);
    		circle.setFillColor(sf::Color(cell->DNA->color_red,cell->DNA->color_green,cell->DNA->color_blue));
+   		
+   		//Cell might be in shadow
+		if (world->grid[i].lightStrength < sunStrength)
+		{
+			double lightStrength = ((double)world->grid[i].lightStrength)/sunStrength;
+			if (lightStrength < minLightCoeff) lightStrength = minLightCoeff;
+			sf::Color nColor = circle.getFillColor();
+			nColor.r = lightStrength*nColor.r;
+			nColor.g = lightStrength*nColor.g;
+			nColor.b = lightStrength*nColor.b; 
+			circle.setFillColor(nColor);
+		}
+   		
    		window->draw(circle);
    		
     }

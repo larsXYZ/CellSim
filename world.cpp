@@ -5,7 +5,7 @@
 worldObject::worldObject()
 {
 	generate_ground();
-	for (int i = 0; i < 5; i++) createLife();
+	for (int i = 0; i < 10; i++) createLife();
 }
 
 void worldObject::generate_ground()
@@ -74,8 +74,12 @@ void worldObject::generate_ground()
 
 void worldObject::update()
 {
+	//Calculates light
+	calcLight();
+	
+	//Cell stuff
 	for (int i = xsize*ysize-1; i >= 0 ; i--)
-	{
+	{	
 	
 		if (grid[i].life != NULL)
 		{
@@ -99,11 +103,42 @@ void worldObject::update()
 				grid[i].life = NULL;
 			}
 			
+			//Some cells move along the ground
 			cell->crawl(i);
 			
-		}
-		
+		}		
 	}
+}
+
+void worldObject::calcLight()
+{
+	//Resets all lighting to zero
+	for(int i = 0; i < xsize*ysize; i++) grid[i].lightStrength = 0;
+
+	
+	for(int x = 0; x < xsize; x++)
+	{
+		int y = 0;
+		int beamStrength = sunStrength;
+		
+		while (beamStrength > 0)
+		{
+			int index = vectorToIndex(x,y);
+			
+			//Cell lights up
+			grid[index].lightStrength = beamStrength;	
+				
+			//Hit detection /GROUND /LIFE
+			if(grid[index].type != AIR) beamStrength = 0;
+			
+			//Hit detection /LIFE
+			if (grid[index].life != NULL) beamStrength--;
+
+			y++;
+		}	
+	}
+
+	
 }
 
 void worldObject::createLife()

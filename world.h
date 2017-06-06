@@ -7,6 +7,7 @@ struct gridcell
 {
 	cell* life = NULL;
 	gridtype type = AIR;
+	int lightStrength = 0; //Currently sunStrength - 0
 };
 
 struct worldObject
@@ -21,6 +22,7 @@ struct worldObject
 	
 	//Simulation functions
 	void update();
+	void calcLight();
 	
 	//Life functions
 	void createLife();

@@ -34,8 +34,12 @@ void cell::live()
 	//Ages
 	age++;	
 	
-	//Gain energy from sunlight
-	if (energy < 100) energy++;
+	//Gets energy from photosynthesis
+	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;
+	if (DNA->foodtype == 0 && lightStrength > 0) energy += photosynthesisStrength*lightStrength; 
+	
+	//Limits energy too 100
+	if (energy > 100) energy = 100;
 	
 	//Breed
 	duplicate();
@@ -94,7 +98,11 @@ void cell::crawl(int i)
 				
 		if (rand() % 100 < DNA->movefreq)
 		{	
-			if (world->isFree(xpos+xvel,ypos+yvel)) world->moveToLocation(i,xpos+xvel,ypos+yvel);
+			if (world->isFree(xpos+xvel,ypos+yvel)) 
+			{
+				world->moveToLocation(i,xpos+xvel,ypos+yvel);
+				energy -= movementCost;
+			}
 		}
 	}
 }
