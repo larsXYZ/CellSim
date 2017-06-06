@@ -65,6 +65,8 @@ void cell::duplicate()
 		
 		child->xpos = xpos + dir[0];
 		child->ypos = ypos + dir[1];
+		child->xvel = xvel;
+		child->yvel = yvel;
 		child->energy = 50;
 		delete child->DNA;
 		child->DNA = new DNAOBJECT(DNA);
