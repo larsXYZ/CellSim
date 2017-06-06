@@ -5,9 +5,9 @@
 
 DNAOBJECT::DNAOBJECT()
 {
-	color_red = rand() % 256;
-	color_green = rand() % 256;
-	color_blue = rand() % 256;
+	color_red = rand() % 100 + 156;
+	color_green = rand() % 100 + 156;
+	color_blue = rand() % 100 + 156;
 	
 	breedrate = rand() % (breedrate_max-breedrate_min) + breedrate_min;
 	lifespan = rand() % (lifespan_max-lifespan_min) + lifespan_min;

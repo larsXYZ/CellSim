@@ -60,7 +60,6 @@ void cell::eatPlant()
 	//Gets random direction
 	int* dir = getRandomDirection();
 	int index = world->vectorToIndex(xpos+dir[0],ypos+dir[1]);
-	delete dir;
 	
 	if (world->grid[index].life != NULL)
 	{
@@ -70,8 +69,11 @@ void cell::eatPlant()
 			energy += victim->energy;
 			delete victim;
 			world->grid[index].life = NULL;
+			world->moveToLocation(index,xpos+dir[0],ypos+dir[1]);
 		}
 	}
+	
+	delete dir;
 }
 
 void cell::duplicate()
