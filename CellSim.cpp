@@ -36,8 +36,8 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
             
-            if (event.type == sf::Event::KeyPressed)
-				world.generate_ground();
+            //if (event.type == sf::Event::KeyPressed)
+				//world.generate_ground();
         }
 
 		//GRAPHICS

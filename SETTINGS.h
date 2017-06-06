@@ -15,8 +15,8 @@ static const double minLightCoeff = 0.7;
 
 //DNA settings
 static const int mutation_rate = 5;
-static const int breedrate_min = 1;
-static const int breedrate_max = 30;
+static const int breedrate_min = 10;
+static const int breedrate_max = 70;
 static const int lifespan_min = 50;
 static const int lifespan_max = 1000;
 static const int movefreq_min = 1;
