@@ -11,6 +11,10 @@ DNAOBJECT::DNAOBJECT()
 	
 	breedrate = rand() % (breedrate_max-breedrate_min) + breedrate_min;
 	lifespan = rand() % (lifespan_max-lifespan_min) + lifespan_min;
+	movefreq = rand() % (movefreq_max-movefreq_min) + movefreq_min;
+	stationary = rand() % 2;
+	turnfreq = rand() % (turnfreq_max-turnfreq_min) + turnfreq_min;
+	
 }
 
 
@@ -22,4 +26,11 @@ DNAOBJECT::DNAOBJECT(DNAOBJECT *d)
 	
 	breedrate = d->breedrate +(rand()%mutation_rate-mutation_rate/2);
 	lifespan = d->lifespan +(rand()%mutation_rate-mutation_rate/2);
+	movefreq = d->movefreq +(rand()%mutation_rate-mutation_rate/2);
+	turnfreq = d->turnfreq +(rand()%mutation_rate-mutation_rate/2);
+	
+	
+	if (rand() % 100 < mutation_rate) stationary = !stationary;
+	
+	
 }

@@ -24,11 +24,12 @@ struct worldObject
 	
 	//Life functions
 	void createLife();
-	bool canFall(cell* c);
+	void moveToLocation(int i, int x, int y);
 	
 	//Helper functions
 	int vectorToIndex(int x, int y);
 	int* indexToVector(int i);
+	bool isFree(int x, int y);
 	
 	//Destructor
 	~worldObject();

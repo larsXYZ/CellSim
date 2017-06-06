@@ -9,6 +9,10 @@ struct cell
 	
 	int xpos;
 	int ypos;
+	
+	int xvel;
+	int yvel;
+	
 	int energy;
 	int age;
 
@@ -19,6 +23,9 @@ struct cell
 	
 	void live();
 	void duplicate();
+	void crawl(int i);
+	
+	int* getRandomDirection();
 
 };
 

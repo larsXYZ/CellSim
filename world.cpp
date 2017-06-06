@@ -81,6 +81,9 @@ void worldObject::update()
 		{
 			cell* cell = grid[i].life;
 			
+			//Lets cell live
+			cell->live();
+			
 			//Check for death
 			if (cell->energy <= 0 || cell->age > cell->DNA->lifespan)
 			{
@@ -90,13 +93,14 @@ void worldObject::update()
 			}
 			
 			//Cells fall
-			if (canFall(cell))
+			if (isFree(cell->xpos,cell->ypos+1))
 			{
 				grid[vectorToIndex(cell->xpos,++(cell->ypos))].life = cell;
 				grid[i].life = NULL;
 			}
 			
-			cell->live();
+			cell->crawl(i);
+			
 		}
 		
 	}
@@ -108,9 +112,15 @@ void worldObject::createLife()
 	grid[(new_cell->ypos*xsize)+new_cell->xpos].life = new_cell;
 }
 
-bool worldObject::canFall(cell* c)
+void worldObject::moveToLocation(int i, int x, int y)
 {
-	gridcell cell_below = grid[vectorToIndex(c->xpos,c->ypos+1)];
+	grid[vectorToIndex(x,y)].life = grid[i].life;
+	grid[i].life = NULL;
+}
+
+bool worldObject::isFree(int x, int y)
+{
+	gridcell cell_below = grid[vectorToIndex(x,y)];
 	return (cell_below.type == AIR)&&(cell_below.life == NULL);
 }
 

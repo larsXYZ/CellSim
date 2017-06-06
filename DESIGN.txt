@@ -31,8 +31,9 @@ MODULES:
 		Information about how the cell behaves. Can be inheritet
 		*Lifespan
 		*Breedingrate
-		*Slippery
 		*Color
+		
+		*Slippery
 		*Flying
 		*Herbavore
 		*Plant
