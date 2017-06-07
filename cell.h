@@ -27,8 +27,10 @@ struct cell
 	void duplicate();
 	int eatPlant(); //Returns 1 if it eats something
 	int crawl(); //Returns 1 if it moves
+	void energy_transfer();
+	int eatAnimal();
 	
-	int* getRandomDirection();
+	int* getRandomDirection(int pref);
 
 };
 

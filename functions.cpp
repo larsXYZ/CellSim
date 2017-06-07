@@ -67,6 +67,7 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
    		
    		//Cell might be in shadow orbe herbavore 
    		if (cell->DNA->foodtype == 1) circle.setFillColor(sf::Color::Black);
+   		else if (cell->DNA->foodtype == 2) circle.setFillColor(sf::Color::Red);
 		else if (world->grid[i].lightStrength < sunStrength)
 		{
 			double lightCoeff = minLightCoeff + (1-minLightCoeff)*((double)world->grid[i].lightStrength/(double)sunStrength);

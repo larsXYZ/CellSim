@@ -143,13 +143,13 @@ void worldObject::calcLight()
 
 void worldObject::generate_life()
 {
-	for (int x = 0; x < xsize; x++)
+	for (int x = 0; x < xsize/start_life_spread; x++)
 	{
 		cell* new_cell = new cell(this);
-		new_cell->xpos = x;
+		new_cell->xpos = x*start_life_spread;
 		
 		int y = 0;
-		while(grid[vectorToIndex(x,y)].type == AIR) y++;
+		while(grid[vectorToIndex(x*start_life_spread,y)].type == AIR) y++;
 		
 		new_cell->ypos = y;
 		new_cell->DNA->foodtype = 0; //We must start with plants
