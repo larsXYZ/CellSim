@@ -7,6 +7,7 @@
 
 cell::cell()
 {
+	hasMoved = false;
 	DNA = new DNAOBJECT();
 	world = NULL;
 	xpos = rand() % xsize;
@@ -19,6 +20,7 @@ cell::cell()
 
 cell::cell(worldObject* w)
 {
+	hasMoved = false;
 	DNA = new DNAOBJECT();
 	world = w;
 	xpos = rand() % xsize;
@@ -29,37 +31,63 @@ cell::cell(worldObject* w)
 	age = 0;
 }
 
-void cell::live()
-{
+int cell::live()
+{	
+	
 	//Ages
 	age++;
 	
 	//Requires energy to live
 	energy -= lifeCost;
 	
+	//Breed
+	duplicate();
+	
 	//Gets energy from photosynthesis if plant
 	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;
 	if (DNA->foodtype == 0 && lightStrength > 0) energy += photosynthesisStrength*lightStrength; 
 	
-	//Tries to eat plants if herbivore
-	if (DNA->foodtype == 1) eatPlant();
 	
-	//Limits energy too 100
+
+	
+	//Cells can do different actions. If they move we must tell the rest of the program
+	int movement_indicator = 0;
+	
+	//Cells crawl
+	movement_indicator += crawl();
+	
+	//Tries to eat plants if herbivore, and quits function if it did
+	if (DNA->foodtype == 1)
+	{
+		if (eatPlant()) return movement_indicator;
+	}
+	
+	//Cells fall
+	if (world->isFree(xpos,ypos+1))
+	{
+		world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos,ypos+1);
+		movement_indicator += 1;
+	}
+	
+	//Limits energy to 100
 	if (energy > 100) energy = 100;
-	
-	//Breed
-	duplicate();
+	return movement_indicator;
 }
 
 
-void cell::eatPlant()
+int cell::eatPlant()
 {
 	//Checks eatchance
-	if (eatChancePlant > rand()%100) return;	
+	if (eatChancePlant > rand()%100) return 0;	
 	
 	//Gets random direction
 	int* dir = getRandomDirection();
-	int index = world->vectorToIndex(xpos+dir[0],ypos+dir[1]);
+	int dx = dir[0];
+	int dy = dir[1];
+	delete dir;
+	
+	int index = world->vectorToIndex(xpos+dx,ypos+dy);
+	if (index == -1) return 0; //Index out of range, something wrong
 	
 	if (world->grid[index].life != NULL)
 	{
@@ -69,11 +97,10 @@ void cell::eatPlant()
 			energy += victim->energy;
 			delete victim;
 			world->grid[index].life = NULL;
-			world->moveToLocation(index,xpos+dir[0],ypos+dir[1]);
+			world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+dx,ypos+dy);
+			return 1;
 		}
 	}
-	
-	delete dir;
 }
 
 void cell::duplicate()
@@ -82,14 +109,17 @@ void cell::duplicate()
 	if (energy < 60) return;
 
 	//Checks breedchance
-	if(rand()%100 > DNA->breedrate) return;
+	if(rand()%100 > DNA->breedrate[DNA->foodtype]) return;
 	
 	//Chooses direction
 	int *dir;
 	dir = getRandomDirection();
+	int dx = dir[0];
+	int dy = dir[1];
+	delete dir;
 		
 	//Checks if choosen spawn spot is valid
-	int index = world->vectorToIndex(xpos+dir[0],ypos+dir[1]);
+	int index = world->vectorToIndex(xpos+dx,ypos+dy);
 	if (index == -1) return;
 	
 	//Creates child and gives on mutated genes
@@ -98,8 +128,8 @@ void cell::duplicate()
 		world->grid[index].life = new cell(world);
 		cell* child = world->grid[index].life;
 		
-		child->xpos = xpos + dir[0];
-		child->ypos = ypos + dir[1];
+		child->xpos = xpos + dx;
+		child->ypos = ypos + dy;
 		child->xvel = xvel;
 		child->yvel = yvel;
 		child->energy = 50;
@@ -108,12 +138,9 @@ void cell::duplicate()
 		
 		energy -= 50;
 	}
-	
-	//Deletes dynamically memory from getRandomDirection
-	delete dir;
 }
 
-void cell::crawl(int i)
+int cell::crawl()
 {
 	if (!DNA->stationary)
 	{
@@ -126,16 +153,20 @@ void cell::crawl(int i)
 			yvel = dir[1];
 			delete dir;
 		}
-				
+		
+		//Moves
 		if (rand() % 100 < DNA->movefreq)
 		{	
 			if (world->isFree(xpos+xvel,ypos+yvel)) 
 			{
-				world->moveToLocation(i,xpos+xvel,ypos+yvel);
+				world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+xvel,ypos+yvel);
 				energy -= movementCost;
+				return 1;
 			}
 		}
 	}
+	
+	return 0;
 }
 
 int* cell::getRandomDirection()

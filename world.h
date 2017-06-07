@@ -19,13 +19,13 @@ struct worldObject
 	
 	//Startup functions
 	void generate_ground();
+	void generate_life();
 	
 	//Simulation functions
 	void update();
 	void calcLight();
 	
 	//Life functions
-	void createLife();
 	void moveToLocation(int i, int x, int y);
 	
 	//Helper functions

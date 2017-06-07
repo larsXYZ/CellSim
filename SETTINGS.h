@@ -15,8 +15,12 @@ static const double minLightCoeff = 0.6;
 
 //DNA settings
 static const int mutation_rate = 5;
-static const int breedrate_min = 1;
-static const int breedrate_max = 20;
+static const int breedrate_plant_min = 1;
+static const int breedrate_plant_max = 20;
+static const int breedrate_herbavore_min = 1;
+static const int breedrate_herbavore_max = 3;
+
+
 static const int lifespan_min = 50;
 static const int lifespan_max = 1000;
 static const int movefreq_min = 1;
@@ -25,9 +29,9 @@ static const int turnfreq_min = 1;
 static const int turnfreq_max = 10;
 
 //Cells
-static const int movementCost = 1;
+static const int movementCost = 4;
 static const int photosynthesisStrength = 1;
 static const int lifeCost = 1;
-static const int eatChancePlant = 20;
+static const int eatChancePlant = 10;
 
 #endif

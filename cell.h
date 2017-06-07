@@ -7,6 +7,8 @@ struct cell
 	worldObject* world;
 	DNAOBJECT *DNA;
 	
+	bool hasMoved;
+	
 	int xpos;
 	int ypos;
 	
@@ -21,10 +23,10 @@ struct cell
 	cell();
 	cell(worldObject* w);
 	
-	void live();
+	int live(); //Returns 1 if cell has moved
 	void duplicate();
-	void eatPlant();
-	void crawl(int i);
+	int eatPlant(); //Returns 1 if it eats something
+	int crawl(); //Returns 1 if it moves
 	
 	int* getRandomDirection();
 

@@ -5,7 +5,7 @@
 worldObject::worldObject()
 {
 	generate_ground();
-	for (int i = 0; i < 10; i++) createLife();
+	generate_life();
 }
 
 void worldObject::generate_ground()
@@ -74,6 +74,14 @@ void worldObject::generate_ground()
 
 void worldObject::update()
 {
+
+	//Resets all lighting to zero and resets all lifeforms
+	for(int i = 0; i < xsize*ysize; i++)
+	{
+		grid[i].lightStrength = 0;
+		if (grid[i].life != NULL) grid[i].life->hasMoved = false;
+	
+	}
 	//Calculates light
 	calcLight();
 	
@@ -85,8 +93,9 @@ void worldObject::update()
 		{
 			cell* cell = grid[i].life;
 			
-			//Lets cell live
-			cell->live();
+			//Checks if the cell already has done something	
+			if (cell->hasMoved) continue;
+			cell->hasMoved = true;
 			
 			//Check for death
 			if (cell->energy <= 0 || cell->age > cell->DNA->lifespan)
@@ -95,16 +104,10 @@ void worldObject::update()
 				grid[i].life = NULL;
 				continue;
 			}
+					
+			//Lets cell live
+			if (cell->live()) continue;
 			
-			//Cells fall
-			if (isFree(cell->xpos,cell->ypos+1))
-			{
-				grid[vectorToIndex(cell->xpos,++(cell->ypos))].life = cell;
-				grid[i].life = NULL;
-			}
-			
-			//Some cells move along the ground
-			cell->crawl(i);
 			
 		}		
 	}
@@ -112,9 +115,6 @@ void worldObject::update()
 
 void worldObject::calcLight()
 {
-	//Resets all lighting to zero
-	for(int i = 0; i < xsize*ysize; i++) grid[i].lightStrength = 0;
-
 	
 	for(int x = 0; x < xsize; x++)
 	{
@@ -141,16 +141,28 @@ void worldObject::calcLight()
 	
 }
 
-void worldObject::createLife()
+void worldObject::generate_life()
 {
-	cell* new_cell = new cell(this);
-	new_cell->DNA->foodtype = 0; //We must start with plants
-	grid[(new_cell->ypos*xsize)+new_cell->xpos].life = new_cell;
+	for (int x = 0; x < xsize; x++)
+	{
+		cell* new_cell = new cell(this);
+		new_cell->xpos = x;
+		
+		int y = 0;
+		while(grid[vectorToIndex(x,y)].type == AIR) y++;
+		
+		new_cell->ypos = y;
+		new_cell->DNA->foodtype = 0; //We must start with plants
+		grid[vectorToIndex(new_cell->xpos,new_cell->ypos)].life = new_cell;
+	}
 }
 
 void worldObject::moveToLocation(int i, int x, int y)
 {
-	grid[vectorToIndex(x,y)].life = grid[i].life;
+	int next_index = vectorToIndex(x,y);
+	grid[next_index].life = grid[i].life;
+	grid[next_index].life->xpos = x;
+	grid[next_index].life->ypos = y;
 	grid[i].life = NULL;
 }
 
