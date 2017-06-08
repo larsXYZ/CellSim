@@ -7,6 +7,8 @@ struct gridcell
 {
 	cell* life = NULL;
 	gridtype type = AIR;
+	
+	int nutrients = 0;
 	int lightStrength = 0; //Currently sunStrength - 0
 };
 

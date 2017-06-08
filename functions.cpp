@@ -19,6 +19,8 @@ void drawWorld(worldObject* world, sf::RenderWindow* window)
    			case DIRT:
     		{
     			rectangle.setFillColor(sf::Color(130,100,100));
+    			//If the soil is not nutrient it will be slightly darker
+    			if (world->grid[i].nutrients == 0) rectangle.setFillColor(sf::Color(125,95,95));
    				break;
    			}
    			

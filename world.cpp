@@ -2,6 +2,8 @@
 #include "cell.h"
 #include "DNA.h"
 
+#include <iostream>
+
 worldObject::worldObject()
 {
 	generate_ground();
@@ -42,8 +44,33 @@ void worldObject::generate_ground()
 		if (h + dh + dh2 < ysize && h + dh + dh2 > 0 && grid[(ysize-h+2)*xsize + i].type != STONE) h += (dh + dh2);
 	}
 	
+	//Generates nutrient veins
+	for (int x = 0; x < (xsize-1); x += 2)
+	{
+		for (int y = 0; y < (ysize-1); y += 2)
+		{
+			int n_val = rand() % 5 - 2;
+			if (n_val < 1) n_val = 0;
+			grid[(y+1)*xsize + x +1].nutrients = n_val;
+			grid[(y)*xsize + x + 1].nutrients = n_val;
+			grid[(y + 1)*xsize + x].nutrients = n_val;
+			grid[(y)*xsize + x].nutrients = n_val;
+		}
+	}
+	for (int x = 0; x < (xsize-1); x += 1)
+	{
+		for (int y = 0; y < (ysize-1); y += 1)
+		{
+			if (grid[(y)*xsize + x].nutrients != 0) continue;
+			
+			int n_val = rand() % 5 - 3;
+			if (n_val < 1) n_val = 0;
+			grid[(y)*xsize + x].nutrients = n_val;
+		}
+	}
+	
 	//Generates caves
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		int x = (i*xsize/12)+xsize/12+(rand()%5-2);
 		int dx = 0;
@@ -75,7 +102,7 @@ void worldObject::generate_ground()
 void worldObject::update()
 {
 
-	//Resets all lighting to zero and resets all lifeforms
+	//Resets all lighting to zero and resets all lifeforms and regains nutrients
 	for(int i = 0; i < xsize*ysize; i++)
 	{
 		grid[i].lightStrength = 0;
@@ -159,6 +186,13 @@ void worldObject::generate_life()
 
 void worldObject::moveToLocation(int i, int x, int y)
 {
+	//Out of bounds error
+	if (x >= xsize || x < 0 || y >= ysize || y < 0)
+	{
+		std::cout << "OUT OF BOUNDS MOVETOLOC\n";
+		return;
+	}
+	
 	int next_index = vectorToIndex(x,y);
 	grid[next_index].life = grid[i].life;
 	grid[next_index].life->xpos = x;
@@ -168,18 +202,38 @@ void worldObject::moveToLocation(int i, int x, int y)
 
 bool worldObject::isFree(int x, int y)
 {
+	//Out of bounds error
+	if (x >= xsize || x < 0 || y >= ysize || y < 0)
+	{
+		std::cout << "OUT OF BOUNDS ISFREE\n";
+		return false;
+	}
+	
 	gridcell cell_below = grid[vectorToIndex(x,y)];
 	return (cell_below.type == AIR)&&(cell_below.life == NULL);
 }
 
 int worldObject::vectorToIndex(int x, int y)
 {
-	if (x < 0 || x >= xsize  || y < 0 || y >=ysize) return -1; //ERROR OUT OF BOUNDS
+	if (x < 0 || x >= xsize || y < 0 || y >= ysize)
+	{
+		std::cout << "OUT OF BOUNDS VECTORTOINDEX\n" << x << " " << y << std::endl;
+		return -1; //ERROR OUT OF BOUNDS
+	}
+	
 	return y*xsize + x;
 }
 
 int* indexToVector(int i)
 {
+	if (i > xsize*ysize)
+	{
+		std::cout << "OUT OF BOUNDS INDEXTOVECTOR\n";
+		return NULL; //Out of bounds
+	}
+	
+	std::cout << "INDEXTOVECTOR IS USED";
+	
 	int result[2] = {0,0};
 	result[0] = i % xsize;
 	result[1] = i / xsize;

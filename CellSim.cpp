@@ -21,13 +21,13 @@ int main()
 	srand(time(NULL));
 	
 	//Activates modules
-	worldObject world;
+	worldObject* world = new worldObject;
 	
     while (window.isOpen())
     {
 
 		//SIMULATION
-		world.update();    	
+		world->update();    	
     	
     	//EVENTHANDLING
         sf::Event event;
@@ -36,13 +36,17 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
             
-            //if (event.type == sf::Event::KeyPressed)
-				//world.generate_ground();
+            if (event.type == sf::Event::KeyPressed)
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					delete world;
+					world = new worldObject;
+				}
         }
 
 		//GRAPHICS
-		drawWorld(&world, &window);
-		drawLife(&world, &window);
+		drawWorld(world, &window);
+		drawLife(world, &window);
         window.display();
         window.clear();
     }

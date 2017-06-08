@@ -5,14 +5,15 @@
 
 #include <stdlib.h>
 #include <cmath>
+#include <iostream>
 
 cell::cell()
 {
 	hasMoved = false;
 	DNA = new DNAOBJECT();
 	world = NULL;
-	xpos = rand() % xsize;
-	ypos = 1;
+	xpos = 0;
+	ypos = 0;
 	xvel = 0;
 	yvel = 0;
 	energy = 100;
@@ -24,8 +25,8 @@ cell::cell(worldObject* w)
 	hasMoved = false;
 	DNA = new DNAOBJECT();
 	world = w;
-	xpos = rand() % xsize;
-	ypos = 10;
+	xpos = 0;
+	ypos = 0;
 	xvel = 0;
 	yvel = 0;
 	energy = 100;
@@ -34,7 +35,7 @@ cell::cell(worldObject* w)
 
 int cell::live()
 {	
-	
+
 	//Ages
 	age++;
 	
@@ -43,21 +44,27 @@ int cell::live()
 	
 	//Breed
 	duplicate();
-	
+
 	//Gets energy from photosynthesis if plant
 	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;
 	if (DNA->foodtype == 0 && lightStrength > 0) energy += photosynthesisStrength*lightStrength; 
-	
+
 	//Some cells gets energy from the soil
-	if (DNA->foodtype == 0 && world->grid[world->vectorToIndex(xpos,ypos)].type == DIRT && DNA->digger) energy += soilentEnergyStrength; 
-	
-	//Some plantcells give away energy to similar cells
-	if (DNA->foodtype == 0) energy_transfer();
-	
-	
+	if (DNA->foodtype == 0 && world->grid[world->vectorToIndex(xpos,ypos)].type == DIRT && DNA->digger)
+	{
+		if (world->grid[world->vectorToIndex(xpos,ypos)].nutrients > 0)
+		{
+			energy += world->grid[world->vectorToIndex(xpos,ypos)].nutrients;
+		}
+	}
+
+	//Some plantcells give away energy to similar cells DOESNT WORK FOR SOME WEIRD REASON
+	//if (DNA->foodtype == 0) energy_transfer();
+
+
 	//Cells can do different actions. If they move we must tell the rest of the program
 	int movement_indicator = 0;
-	
+
 	//Cells crawl
 	movement_indicator += crawl();
 	
@@ -83,6 +90,7 @@ int cell::live()
 	//Limits energy to 100
 	if (energy > 100) energy = 100;
 	return movement_indicator;
+
 }
 
 
@@ -113,7 +121,6 @@ int cell::eatPlant()
 		{
 			energy += victim->energy;
 			delete victim;
-			world->grid[index].life = NULL;
 			world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+dx,ypos+dy);
 			return 1;
 		}
@@ -138,7 +145,7 @@ int cell::eatAnimal()
 	int index = world->vectorToIndex(xpos+dx,ypos+dy);
 	if (index == -1) return 0; //Index out of range, something wrong
 	
-	//Target must be in the AIR
+	//Target must be in AIR
 	if (world->grid[index].type != AIR) return 0;
 	
 	if (world->grid[index].life != NULL)
@@ -153,6 +160,7 @@ int cell::eatAnimal()
 			return 1;
 		}
 	}
+	return 0;
 }
 
 void cell::energy_transfer()
@@ -170,6 +178,8 @@ void cell::energy_transfer()
 	if (world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].life == NULL) return;
 	cell* target = world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].life;
 	
+	if (target->DNA == NULL) std::cout << "ALARSM" << std::endl;
+
 	//Target must be pretty similar to giver
 	int tr = target->DNA->color_red;
 	int tg = target->DNA->color_green;
@@ -187,6 +197,7 @@ void cell::energy_transfer()
 	//Gives cell some energy
 	target->energy += energy_transfer_amount;
 	energy -= energy_transfer_amount;
+
 }
 
 void cell::duplicate()
@@ -209,7 +220,10 @@ void cell::duplicate()
 	if (index == -1) return;
 	
 	//Cant dig into ground unless DNA allows it to
-	if (world->grid[index].type != AIR && !DNA->digger) return;
+	if (world->grid[index].type != AIR)
+	{
+		if (!DNA->digger) return;
+	}
 	
 	//Plants dont kill to make room for its child
 	if (world->grid[index].life != NULL && DNA->foodtype == 0) return;
@@ -233,30 +247,30 @@ void cell::duplicate()
 
 int cell::crawl()
 {
-	if (!DNA->stationary)
-	{
-		
-		//Only does this if not hungry
-		if (energy < movementHungerLimit) return 0;
+	
+	//Only moves if dna allows for it
+	if (DNA->stationary) return 0;
+
+	//Only does this if not hungry
+	if (energy < movementHungerLimit) return 0;
 				
-		//Changes direction
-		if (rand() % 100 < DNA->turnfreq)
-		{						
-			int* dir = getRandomDirection(8); //8 -> no preferred direction
-			xvel = dir[0];
-			yvel = dir[1];
-			delete dir;
-		}
+	//Changes direction
+	if (rand() % 100 < DNA->turnfreq)
+	{						
+		int* dir = getRandomDirection(8); //8 -> no preferred direction
+		xvel = dir[0];
+		yvel = dir[1];
+		delete dir;
+	}
 		
-		//Moves
-		if (rand() % 100 < DNA->movefreq)
-		{	
-			if (world->isFree(xpos+xvel,ypos+yvel)) 
-			{
-				world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+xvel,ypos+yvel);
-				energy -= movementCost;
-				return 1;
-			}
+	//Moves
+	if (rand() % 100 < DNA->movefreq)
+	{	
+		if (world->isFree(xpos+xvel,ypos+yvel)) 
+		{
+			world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+xvel,ypos+yvel);
+			energy -= movementCost;
+			return 1;
 		}
 	}
 	
