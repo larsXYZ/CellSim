@@ -19,6 +19,7 @@ DNAOBJECT::DNAOBJECT()
 	foodtype = rand() % 3;
 	preferred_duplication_dir = rand() % 9;
 	energy_transfer_rate = rand() % (energy_transfer_rate_max-energy_transfer_rate_min) + energy_transfer_rate_min;
+	digger = rand() % 2;
 	
 }
 
@@ -31,6 +32,7 @@ DNAOBJECT::DNAOBJECT(DNAOBJECT *d)
 	
 	breedrate[0] = d->breedrate[0] +(rand()%mutation_rate-mutation_rate/2);
 	breedrate[1] = d->breedrate[1] +(rand()%mutation_rate-mutation_rate/2);
+	breedrate[2] = d->breedrate[2] +(rand()%mutation_rate-mutation_rate/2);
 	lifespan = d->lifespan +(rand()%mutation_rate-mutation_rate/2);
 	movefreq = d->movefreq +(rand()%mutation_rate-mutation_rate/2);
 	turnfreq = d->turnfreq +(rand()%mutation_rate-mutation_rate/2);
@@ -42,7 +44,9 @@ DNAOBJECT::DNAOBJECT(DNAOBJECT *d)
 	if (rand() % 100 < mutation_rate) preferred_duplication_dir = rand() % 9;
 	
 	if (foodtype == 1) if (rand() % 60 < mutation_rate) foodtype = 2;
-	if (rand() % 2000 < mutation_rate) foodtype = rand()%3;
+	if (rand() % 1000 < mutation_rate) foodtype = rand()%3;
+	
+	if (rand() % 100 < mutation_rate) digger = rand() % 2;
 	
 	
 }

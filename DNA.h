@@ -14,6 +14,7 @@ struct DNAOBJECT
 	int preferred_duplication_dir; // 0 - 8, 8 -> no pref
 	int energy_transfer_level; //When it will share energy
 	int energy_transfer_rate; //Chance that cell will give another cell some of its energy, if it has plenty
+	int digger;// 1-0, can dig into ground
 	
 	//Constructor
 	DNAOBJECT();

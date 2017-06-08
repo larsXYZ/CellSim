@@ -48,6 +48,9 @@ int cell::live()
 	int lightStrength = world->grid[world->vectorToIndex(xpos,ypos)].lightStrength;
 	if (DNA->foodtype == 0 && lightStrength > 0) energy += photosynthesisStrength*lightStrength; 
 	
+	//Some cells gets energy from the soil
+	if (DNA->foodtype == 0 && world->grid[world->vectorToIndex(xpos,ypos)].type == DIRT && DNA->digger) energy += soilentEnergyStrength; 
+	
 	//Some plantcells give away energy to similar cells
 	if (DNA->foodtype == 0) energy_transfer();
 	
@@ -100,6 +103,9 @@ int cell::eatPlant()
 	int index = world->vectorToIndex(xpos+dx,ypos+dy);
 	if (index == -1) return 0; //Index out of range, something wrong
 	
+	//Target must be in the AIR
+	if (world->grid[index].type != AIR) return 0;
+	
 	if (world->grid[index].life != NULL)
 	{
 		cell* victim = world->grid[index].life;
@@ -131,6 +137,9 @@ int cell::eatAnimal()
 	
 	int index = world->vectorToIndex(xpos+dx,ypos+dy);
 	if (index == -1) return 0; //Index out of range, something wrong
+	
+	//Target must be in the AIR
+	if (world->grid[index].type != AIR) return 0;
 	
 	if (world->grid[index].life != NULL)
 	{
@@ -199,28 +208,27 @@ void cell::duplicate()
 	int index = world->vectorToIndex(xpos+dx,ypos+dy);
 	if (index == -1) return;
 	
-	//Creates child and gives on mutated genes
-	if (world->grid[index].type == AIR)
-	{
-		//Plants dont kill to make room for its child
-		if (world->grid[index].life != NULL && DNA->foodtype == 0) return;
+	//Cant dig into ground unless DNA allows it to
+	if (world->grid[index].type != AIR && !DNA->digger) return;
+	
+	//Plants dont kill to make room for its child
+	if (world->grid[index].life != NULL && DNA->foodtype == 0) return;
 		
-		//Other will
-		if (world->grid[index].life != NULL) delete world->grid[index].life;
+	//Other will
+	if (world->grid[index].life != NULL) delete world->grid[index].life;
 		
-		world->grid[index].life = new cell(world);
-		cell* child = world->grid[index].life;
+	world->grid[index].life = new cell(world);
+	cell* child = world->grid[index].life;
 		
-		child->xpos = xpos + dx;
-		child->ypos = ypos + dy;
-		child->xvel = xvel;
-		child->yvel = yvel;
-		child->energy = breedingHungerLimit/2;
-		delete child->DNA;
-		child->DNA = new DNAOBJECT(DNA);
+	child->xpos = xpos + dx;
+	child->ypos = ypos + dy;
+	child->xvel = xvel;
+	child->yvel = yvel;
+	child->energy = breedingHungerLimit/2;
+	delete child->DNA;
+	child->DNA = new DNAOBJECT(DNA);
 		
-		energy -= breedingHungerLimit/2;
-	}
+	energy -= breedingHungerLimit/2;
 }
 
 int cell::crawl()

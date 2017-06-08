@@ -18,9 +18,9 @@ static const int start_life_spread = 20;
 static const int mutation_rate = 3;
 static const int breedrate_plant_min = 1;
 static const int breedrate_plant_max = 25;
-static const int breedrate_herbavore_min = 1;
-static const int breedrate_herbavore_max = 4;
-static const int breedrate_carnivore_min = 15;
+static const int breedrate_herbavore_min = 5;
+static const int breedrate_herbavore_max = 20;
+static const int breedrate_carnivore_min = 5;
 static const int breedrate_carnivore_max = 20;
 static const int lifespan_min = 50;
 static const int lifespan_max = 1000;
@@ -28,15 +28,16 @@ static const int movefreq_min = 1;
 static const int movefreq_max = 50;
 static const int turnfreq_min = 1;
 static const int turnfreq_max = 10;
-static const int energy_transfer_rate_min = 0;
+static const int energy_transfer_rate_min = 30;
 static const int energy_transfer_rate_max = 60;
 
 
 //Cells
 static const int movementCost = 4;
 static const int photosynthesisStrength = 1;
+static const int soilentEnergyStrength = 1;
 static const int lifeCost = 1;
-static const int eatChancePlant = 20;
+static const int eatChancePlant = 50;
 static const int eatChanceAnimal = 70;
 static const int movementHungerLimit = 20;
 static const int eatingHungerLimit = 50;
