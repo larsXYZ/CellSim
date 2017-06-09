@@ -135,7 +135,6 @@ void worldObject::update()
 			//Lets cell live
 			if (cell->live()) continue;
 			
-			
 		}		
 	}
 }
@@ -151,6 +150,7 @@ void worldObject::calcLight()
 		while (beamStrength > 0)
 		{
 			int index = vectorToIndex(x,y);
+			if (index == -1) std::cout << "CALCLIGHTERROR\n";
 			
 			//Cell lights up
 			grid[index].lightStrength = beamStrength;	
@@ -186,14 +186,14 @@ void worldObject::generate_life()
 
 void worldObject::moveToLocation(int i, int x, int y)
 {
-	//Out of bounds error
-	if (x >= xsize || x < 0 || y >= ysize || y < 0)
+	
+	int next_index = vectorToIndex(x,y);
+	if (next_index == -1)
 	{
-		std::cout << "OUT OF BOUNDS MOVETOLOC\n";
+		std::cout << "MOVETOLOCATION ERROR\n";
 		return;
 	}
 	
-	int next_index = vectorToIndex(x,y);
 	grid[next_index].life = grid[i].life;
 	grid[next_index].life->xpos = x;
 	grid[next_index].life->ypos = y;
@@ -202,14 +202,15 @@ void worldObject::moveToLocation(int i, int x, int y)
 
 bool worldObject::isFree(int x, int y)
 {
-	//Out of bounds error
-	if (x >= xsize || x < 0 || y >= ysize || y < 0)
+	int index = vectorToIndex(x,y);
+	
+	if (index == -1)
 	{
-		std::cout << "OUT OF BOUNDS ISFREE\n";
-		return false;
+		std::cout << "ISFREE ERROR\n";
+		return 0;
 	}
 	
-	gridcell cell_below = grid[vectorToIndex(x,y)];
+	gridcell cell_below = grid[index];
 	return (cell_below.type == AIR)&&(cell_below.life == NULL);
 }
 

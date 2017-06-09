@@ -37,7 +37,7 @@ static const int energy_transfer_rate_max = 60;
 //Cells
 static const int movementCost = 4;
 static const int photosynthesisStrength = 1;
-static const int soilentEnergyStrength = 2;
+static const int soilentEnergyStrength = 3;
 static const int lifeCost = 1;
 static const int eatChancePlant = 50;
 static const int eatChanceAnimal = 50;

@@ -36,6 +36,10 @@ cell::cell(worldObject* w)
 int cell::live()
 {	
 
+	//Debugging check
+	if (world == NULL) std::cout << "World NULL" << std::endl;
+	if (DNA == NULL) std::cout << "DNA NULL" << std::endl;
+
 	//Ages
 	age++;
 	
@@ -59,7 +63,7 @@ int cell::live()
 	}
 
 	//Some plantcells give away energy to similar cells DOESNT WORK FOR SOME WEIRD REASON
-	//if (DNA->foodtype == 0) energy_transfer();
+	if (DNA->foodtype == 0) energy_transfer();
 
 
 	//Cells can do different actions. If they move we must tell the rest of the program
@@ -121,6 +125,8 @@ int cell::eatPlant()
 		{
 			energy += victim->energy;
 			delete victim;
+			world->grid[index].life = NULL;
+			
 			world->moveToLocation(world->vectorToIndex(xpos,ypos),xpos+dx,ypos+dy);
 			return 1;
 		}
@@ -175,10 +181,17 @@ void cell::energy_transfer()
 	delete dir;
 	
 	//Checks if chosen target is occupied
-	if (world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].life == NULL) return;
-	cell* target = world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].life;
+	int target_index = world->vectorToIndex(xpos+dx,ypos+dy);
+	if (target_index == -1)
+	{
+		std::cout << "VECTOR TO INDEX FEIL" << std::endl;
+		return;
+	}
 	
-	if (target->DNA == NULL) std::cout << "ALARSM" << std::endl;
+	if (world->grid[target_index].life == NULL) return;
+	cell* target = world->grid[target_index].life;
+	
+	
 
 	//Target must be pretty similar to giver
 	int tr = target->DNA->color_red;
@@ -229,7 +242,11 @@ void cell::duplicate()
 	if (world->grid[index].life != NULL && DNA->foodtype == 0) return;
 		
 	//Other will
-	if (world->grid[index].life != NULL) delete world->grid[index].life;
+	if (world->grid[index].life != NULL)
+	{
+		delete world->grid[index].life;
+		world->grid[index].life = NULL;
+	}
 		
 	world->grid[index].life = new cell(world);
 	cell* child = world->grid[index].life;
