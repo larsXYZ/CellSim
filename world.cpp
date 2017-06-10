@@ -46,13 +46,13 @@ void worldObject::generate_ground()
 	}
 	
 	//Generates nutrient veins
-	int rad = 1;
+	int rad = 5;
 	for (int x = 0; x < (xsize-1); x += 2)
 	{
 		for (int y = 0; y < (ysize-1); y += 2)
 		{
 			int n_val = rand() % ground_nutrient_max;
-			if (n_val < ground_nutrient_limit) n_val = 0;
+			if (n_val < ground_nutrient_limit+1) n_val = 0;
 			
 			for (int fx = -rad; fx <= rad; fx++)
 			{

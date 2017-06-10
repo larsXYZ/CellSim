@@ -42,10 +42,7 @@ DNAOBJECT::DNAOBJECT(DNAOBJECT *d)
 	
 	if (rand() % 1000 < mutation_rate) stationary = !stationary;
 	if (rand() % 100 < mutation_rate) preferred_duplication_dir = rand() % 9;
-	
-	if (foodtype == 1) if (rand() % 60 < mutation_rate) foodtype = 2;
 	if (rand() % 1000 < mutation_rate) foodtype = rand()%3;
-	
 	if (rand() % 100 < mutation_rate) digger = rand() % 2;
 	
 	
