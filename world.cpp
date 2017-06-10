@@ -3,6 +3,7 @@
 #include "DNA.h"
 
 #include <iostream>
+#include <cmath>
 
 worldObject::worldObject()
 {
@@ -45,25 +46,36 @@ void worldObject::generate_ground()
 	}
 	
 	//Generates nutrient veins
+	int rad = 1;
 	for (int x = 0; x < (xsize-1); x += 2)
 	{
 		for (int y = 0; y < (ysize-1); y += 2)
 		{
-			int n_val = rand() % 5 - 2;
-			if (n_val < 1) n_val = 0;
-			grid[(y+1)*xsize + x +1].nutrients = n_val;
-			grid[(y)*xsize + x + 1].nutrients = n_val;
-			grid[(y + 1)*xsize + x].nutrients = n_val;
-			grid[(y)*xsize + x].nutrients = n_val;
+			int n_val = rand() % ground_nutrient_max;
+			if (n_val < ground_nutrient_limit) n_val = 0;
+			
+			for (int fx = -rad; fx <= rad; fx++)
+			{
+				for (int fy = -rad; fy <= rad; fy++)
+				{
+					if ((x + fx > 0) && (x + fx < xsize) && (y + fy > 0) && (y + fy < ysize))
+					{
+						grid[((y+fy)*xsize)+x+fx].nutrients = n_val;
+					}
+				}
+			}
 		}
 	}
+	
 	for (int x = 0; x < (xsize-1); x += 1)
 	{
 		for (int y = 0; y < (ysize-1); y += 1)
 		{
 			if (grid[(y)*xsize + x].nutrients != 0) continue;
 			
-			int n_val = rand() % 5 - 3;
+			int n_val = rand() % ground_nutrient_max;
+			if (n_val < ground_nutrient_limit) n_val = 0;
+			
 			if (n_val < 1) n_val = 0;
 			grid[(y)*xsize + x].nutrients = n_val;
 		}
@@ -247,6 +259,7 @@ worldObject::~worldObject()
 	for (int i = 0; i < xsize*ysize; i++)
 	{
 		delete grid[i].life;
+		grid[i].life = NULL;
 	}
 }
 

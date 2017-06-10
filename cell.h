@@ -31,6 +31,8 @@ struct cell
 	int eatAnimal();
 	
 	int* getRandomDirection(int pref);
+	
+	~cell();
 
 };
 

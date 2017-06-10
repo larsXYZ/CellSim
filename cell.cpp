@@ -56,10 +56,7 @@ int cell::live()
 	//Some cells gets energy from the soil
 	if (DNA->foodtype == 0 && world->grid[world->vectorToIndex(xpos,ypos)].type == DIRT && DNA->digger)
 	{
-		if (world->grid[world->vectorToIndex(xpos,ypos)].nutrients > 0)
-		{
-			energy += world->grid[world->vectorToIndex(xpos,ypos)].nutrients;
-		}
+		energy += world->grid[world->vectorToIndex(xpos,ypos)].nutrients;
 	}
 
 	//Some plantcells give away energy to similar cells DOESNT WORK FOR SOME WEIRD REASON
@@ -356,4 +353,9 @@ int* cell::getRandomDirection(int pref)
 	result[0] = dx;
 	result[1] = dy;
 	return result;
+}
+
+cell::~cell()
+{
+	delete DNA;
 }
