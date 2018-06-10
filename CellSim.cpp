@@ -14,41 +14,41 @@
 
 int main()
 {
-    //Starts SFML graphics window
-    sf::RenderWindow window(sf::VideoMode(xsize*gridsize, ysize*gridsize), "CellSim");
-	
+  //Starts SFML graphics window
+  sf::RenderWindow window(sf::VideoMode(xsize*gridsize, ysize*gridsize), "CellSim");
+
 	//Seeds random number generator
 	srand(time(NULL));
-	
+
 	//Activates modules
 	worldObject* world = new worldObject;
-	
-    while (window.isOpen())
-    {
 
-		//SIMULATION
-		world->update();    	
-    	
-    	//EVENTHANDLING
+    while (window.isOpen()){
+
+		  //SIMULATION
+  		world->update();
+
+    	  //EVENTHANDLING
         sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
+        while (window.pollEvent(event)){
+
+          if (event.type == sf::Event::Closed)
                 window.close();
-            
-            if (event.type == sf::Event::KeyPressed)
-				if (event.key.code == sf::Keyboard::Escape)
-				{
-					delete world;
-					world = new worldObject;
-				}
+
+          if (event.type == sf::Event::KeyPressed)
+
+          if (event.key.code == sf::Keyboard::Escape){
+
+            delete world;
+  					world = new worldObject;
+  				}
         }
 
-		//GRAPHICS
-		drawWorld(world, &window);
-		drawLife(world, &window);
-        window.display();
-        window.clear();
+		  //GRAPHICS
+		  drawWorld(world, &window);
+		  drawLife(world, &window);
+      window.display();
+      window.clear();
     }
 
     return 0;

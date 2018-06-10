@@ -15,7 +15,8 @@ struct DNAOBJECT
 	int energy_transfer_level; //When it will share energy
 	int energy_transfer_rate; //Chance that cell will give another cell some of its energy, if it has plenty
 	int digger;// 1-0, can dig into ground
-	
+	int merge_rate; //Chance that a plant merges
+
 	//Constructor
 	DNAOBJECT();
 	DNAOBJECT(DNAOBJECT *d);
