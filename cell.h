@@ -16,6 +16,7 @@ struct cell
 	int yvel;
 
 	int energy;
+	int soil_nutrients;
 	int age;
 
 	int mergedCellChildPosX;

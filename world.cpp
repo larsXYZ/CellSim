@@ -148,6 +148,8 @@ void worldObject::update()
 				continue;
 			}
 
+			if (cell->soil_nutrients < 0) cell->soil_nutrients = 0;
+
 			//Lets cell live
 			if (cell->live()) continue;
 
@@ -206,9 +208,7 @@ void worldObject::moveToLocation(int i, int x, int y)
 {
 
 	int next_index = vectorToIndex(x,y);
-	if (next_index == INVALID_INDEX)
-	{
-		std::cout << "MOVETOLOCATION ERROR\n";
+	if (next_index == INVALID_INDEX){
 		return;
 	}
 
@@ -224,7 +224,6 @@ bool worldObject::isFreeAir(int x, int y)
 
 	if (index == INVALID_INDEX)
 	{
-		std::cout << "isAir ERROR\n";
 		return 0;
 	}
 
@@ -277,7 +276,6 @@ int* indexToVector(int i)
 void worldObject::gravity(){
 
 	//Generating groundmap
-	bool groundmap[ysize*xsize];
 	for (int i = 0; i < ysize*xsize; i++) groundmap[i] = false;
 
 	//Recursive look for ground structures
@@ -318,7 +316,7 @@ void worldObject::localGroundRecursive(int x, int y, bool *groundmap){
 		for (int dy = 1; dy >= -1; dy--){
 
 			//No diagonals
-			if (dx == dy) continue;
+			if (dx == dy || dx == -dy) continue;
 
 			int target_index = vectorToIndex(x+dx,y+dy);
 

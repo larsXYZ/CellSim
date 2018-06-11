@@ -17,6 +17,7 @@ cell::cell()
 	xvel = 0;
 	yvel = 0;
 	energy = cell_max_energy;
+	soil_nutrients = 0;
 	age = 0;
 	mergedCellParentPosX = INVALID_COORDINATE;
 	mergedCellParentPosY = INVALID_COORDINATE;
@@ -34,6 +35,7 @@ cell::cell(worldObject* w)
 	xvel = 0;
 	yvel = 0;
 	energy = cell_max_energy;
+	soil_nutrients = 0;
 	age = 0;
 	mergedCellParentPosX = INVALID_COORDINATE;
 	mergedCellParentPosY = INVALID_COORDINATE;
@@ -59,6 +61,10 @@ int cell::live()
 
 	//Requires energy to live
 	energy -= lifeCost;
+	soil_nutrients -= lifeCost;
+
+	//Gain nutrients if ground is below
+	if (world->isFreeDirt(xpos,ypos+1)) soil_nutrients += standard_soil_nutrient_gain;
 
 	//Breed
 	duplicate();
@@ -68,7 +74,7 @@ int cell::live()
 	absorbSoilEnergy();
 
 	//Some plantCells try to merge with other cells
-	if (DNA->foodtype == ISPLANT && !isMerged()){
+	if (DNA->foodtype == ISPLANT && !isMerged() && soil_nutrients > min_soil_nutrient_amount_for_merge){
 		tryToMergeChild();
 		tryToMergeParent();
 	}
@@ -105,9 +111,33 @@ bool cell::isMerged(){
 }
 
 bool cell::hasChild(){
+
+	int index = world->vectorToIndex(mergedCellChildPosX,mergedCellChildPosY);
+	if (index == INVALID_INDEX){
+		mergedCellChildPosX = INVALID_COORDINATE;
+		mergedCellChildPosY = INVALID_COORDINATE;
+		return false;
+	} else if (world->grid[index].life == NULL){
+		mergedCellChildPosX = INVALID_COORDINATE;
+		mergedCellChildPosY = INVALID_COORDINATE;
+		return false;
+	}
+
 	return !(mergedCellChildPosX == INVALID_COORDINATE || mergedCellChildPosY == INVALID_COORDINATE);
 }
 bool cell::hasParent(){
+
+	int index = world->vectorToIndex(mergedCellParentPosX,mergedCellParentPosY);
+	if (index == INVALID_INDEX){
+		mergedCellParentPosX = INVALID_COORDINATE;
+		mergedCellParentPosY = INVALID_COORDINATE;
+		return false;
+	} else if (world->grid[index].life == NULL){
+		mergedCellParentPosX = INVALID_COORDINATE;
+		mergedCellParentPosY = INVALID_COORDINATE;
+		return false;
+	}
+
 	return !(mergedCellParentPosX == INVALID_COORDINATE || mergedCellParentPosY == INVALID_COORDINATE);
 
 }
@@ -139,6 +169,7 @@ void cell::absorbSoilEnergy(){
 	//Some cells gets energy from the soil
 	if (DNA->foodtype == 0 && world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].type == DIRT && DNA->digger){
 		energy += world->grid[world->vectorToIndex(xpos+dx,ypos+dy)].nutrients;
+		soil_nutrients += digger_soil_nutrient_gain;
 	}
 }
 
@@ -213,7 +244,6 @@ void cell::tryToMergeChild(){
 
 		if (target->DNA->foodtype == ISPLANT && !target->hasParent())
 		{
-			std::cout << "MERGING WITH CHILD" << std::endl;
 
 			mergedCellChildPosX = target->xpos;
 			mergedCellChildPosY = target->ypos;
@@ -246,7 +276,6 @@ void cell::tryToMergeParent(){
 
 		if (target->DNA->foodtype == ISPLANT && !target->hasChild())
 		{
-			std::cout << "MERGING WITH PARENT" << std::endl;
 
 			mergedCellParentPosX = target->xpos;
 			mergedCellParentPosY = target->ypos;
@@ -343,25 +372,37 @@ void cell::energy_transfer()
 		return;
 	} else if (parent_cell == NULL){ //Only child cell
 
-		std::cout << "Sharing energy, with child" << std::endl;
 		int sum = energy + child_cell->energy;
 		energy = floor(sum/2);
 		child_cell->energy = floor(sum/2);
 
+		int soil_sum = soil_nutrients + child_cell->soil_nutrients;
+		soil_nutrients = floor(soil_sum/2);
+		child_cell->soil_nutrients = floor(soil_sum/2);
+
 	} else if (child_cell == NULL){ //Only parent cell
 
-		std::cout << "Sharing energy, with parent" << std::endl;
 		int sum = energy + parent_cell->energy;
 		energy = floor(sum/2);
 		parent_cell->energy = floor(sum/2);
 
+		int soil_sum = soil_nutrients + parent_cell->soil_nutrients;
+		soil_nutrients = floor(soil_sum/2);
+		parent_cell->soil_nutrients = floor(soil_sum/2);
+
 	} else{ //Both
 
-		std::cout << "Sharing energy, with parent and child" << std::endl;
 		int sum = energy + parent_cell->energy + child_cell->energy;
 		energy = floor(sum/3);
 		parent_cell->energy = floor(sum/3);
 		child_cell->energy = floor(sum/3);
+
+		int soil_sum = soil_nutrients + parent_cell->soil_nutrients + child_cell->soil_nutrients;
+		soil_nutrients = floor(soil_sum/3);
+		parent_cell->soil_nutrients = floor(soil_sum/3);
+		child_cell->soil_nutrients = floor(soil_sum/3);
+
+
 	}
 }
 
@@ -416,7 +457,7 @@ int cell::crawl()
 {
 
 	//Only moves if dna allows for it
-	if (!DNA->stationary) return 0;
+	if (!(DNA->stationary) && DNA->foodtype == ISPLANT) return 0;
 
 	//Only does this if not hungry
 	if (energy < movementHungerLimit) return 0;

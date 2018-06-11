@@ -15,6 +15,7 @@ struct gridcell
 struct worldObject
 {
 	gridcell grid[xsize*ysize];
+	bool groundmap[ysize*xsize];
 
 	//Constructors
 	worldObject();
@@ -30,7 +31,6 @@ struct worldObject
 	//Gravity functions
 	void gravity();
 	void localGroundRecursive(int x, int y, bool *groundmap);
-
 
 	//Life functions
 	void moveToLocation(int i, int x, int y);

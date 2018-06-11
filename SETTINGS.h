@@ -14,9 +14,14 @@
 //Gridsize
 static const int gridsize = 10;	//Size of gridcell in pixels
 
+//Debug
+static const bool HIGHLIGHT_MERGED = false;
+static const bool HIGHLIGHT_GROUND = false;
+
+
 //World settings
 enum gridtype{DIRT,AIR,STONE}; //Types of gridcell
-static const int xsize = 150;	//Number of gridcells horizontal
+static const int xsize = 200;	//Number of gridcells horizontal
 static const int ysize = 100;	//Number of gridcells vertical
 static const int sunStrength = 3; //First cell gets +sunStrength from photosynthesis, second gets sunStrength-1, etc
 static const double minLightCoeff = 0.8; //Used in printworld, for it not to be to dark
@@ -40,22 +45,25 @@ static const int movefreq_min = 1;
 static const int movefreq_max = 50;
 static const int turnfreq_min = 1;
 static const int turnfreq_max = 10;
-static const int energy_transfer_rate_min = 30;
-static const int energy_transfer_rate_max = 60;
+static const int energy_transfer_rate_min = 50;
+static const int energy_transfer_rate_max = 100;
 static const int merge_rate_min = 0;
-static const int merge_rate_max = 10;
+static const int merge_rate_max = 20;
 
 //Cells
-static const int movementCost = 4;
-static const int photosynthesisStrength = 1;
+static const int movementCost = 2;
+static const int photosynthesisStrength = 2;
 static const int lifeCost = 1;
-static const int eatChancePlant = 50;
+static const int eatChancePlant = 10;
 static const int eatChanceAnimal = 50;
 static const int movementHungerLimit = 20;
 static const int eatingHungerLimit = 50;
 static const int breedingHungerLimit = 60;
 static const int energy_transfer_limit = 60;
 static const int energy_transfer_likeness_limit = 30;
+static const int min_soil_nutrient_amount_for_merge = 2;
+static const int standard_soil_nutrient_gain = 100;
+static const int digger_soil_nutrient_gain = 5000;
 
 
 #endif

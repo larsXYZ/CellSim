@@ -48,6 +48,9 @@ void drawWorld(worldObject* world, sf::RenderWindow* window)
 			rectangle.setFillColor(nColor);
 		}
 
+		//Draw groundmap for debug
+		if (world->groundmap[i] && HIGHLIGHT_GROUND) rectangle.setFillColor(sf::Color::Black);
+
    		window->draw(rectangle);
     }
 }
@@ -86,7 +89,7 @@ void drawLife(worldObject* world, sf::RenderWindow* window)
 			nColor.g = energyCoeff*nColor.g;
 			nColor.b = energyCoeff*nColor.b;
 
-			if (cell->isMerged()) nColor = sf::Color::Blue;
+			if (cell->isMerged() && HIGHLIGHT_MERGED) nColor = sf::Color::Blue;
 
 			circle.setFillColor(nColor);
 		}
